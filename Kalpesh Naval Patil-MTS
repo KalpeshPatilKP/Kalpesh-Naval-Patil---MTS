@@ -1,0 +1,232 @@
+Question-3
+
+app.component.ts
+
+import { Component } from '@angular/core';
+import { store } from '@angular/core/src/render3';
+import { FormGroup, FormControl,Validators } from '@angular/forms';
+import { Product } from './Product';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  myform:FormGroup;
+  products:Product[]=[];
+  
+  constructor(){
+    this.myform=new FormGroup({
+      pname:new FormControl(null,[Validators.required]),
+      pbrand:new FormControl(null,[Validators.required]),
+      pprice:new FormControl(null,[Validators.required]),
+    })
+  }
+    get pname(){
+      return this.myform.get('pname');
+    }
+    get pbrand(){
+      return this.myform.get('pbrand');
+    }
+    get pprice(){
+      return this.myform.get('pprice');
+    }
+
+    store(){
+      this.products.push(new Product(this.myform.value.pname,this.myform.value.pbrand,this.myform.value.pprice));
+      console.log(this.products);
+      this.myform.reset();
+    }
+  
+}
+
+
+
+products.ts
+
+export class Product{
+  pname:string;
+  pbrand:string;
+  pprice:number;
+
+  constructor(pname,pbrand,pprice){
+      this.pname=pname;
+      this.pbrand=pbrand;
+      this.pprice=pprice;
+  }
+}
+
+
+
+app.component.html
+
+<div class="container">
+  <h2 style="text-align: center;">PRODUCT DETAILS</h2>
+
+  <form [formGroup]="myform" (ngSubmit)="store()">
+
+    <div class="form-group">
+      <label for="pname"><b>Product Name</b></label><br>
+      <input type="text" class="form-control" id="pname" formControlName="pname"><br>
+      <small style="color: red" *ngIf="pname && pname.invalid && pname.touched" >Name is Required</small>
+    </div><br>
+
+    <div class="form-group">
+      <label for="pbrand"><b>Product Brand</b></label><br>
+      <input type="text" class="form-control" id="pbrand" formControlName="pbrand"><br>
+      <small style="color: red" *ngIf="pbrand && pbrand.invalid && pbrand.touched" >Brand is Required</small>
+    </div><br>
+
+    <div class="form-group">
+      <label for="pprice"><b>Product Price</b></label><br>
+      <input type="text" class="form-control" id="pprice" formControlName="pprice"><br>
+      <small  style="color: red" *ngIf="pprice && pprice.invalid && pprice.touched">Name is Required</small>
+    </div><br>
+
+    <button type="submit" class="btn btn-primary"  >STORE</button>
+  </form>
+
+</div>
+
+<div style="margin-top: 10px; margin-left: 550px;">
+
+  <table class="table" border="1px">
+    <thead class="thead-light">
+      <tr>
+        <td>PRODUCT NAME</td>
+        <td>PRODUCT BRAND</td>
+        <td>PRODUCT PRICE</td>
+      </tr>
+      <tr *ngFor="let pd of products">
+        <td>{{pd.pname}}</td>
+        <td>{{pd.pbrand}}</td>
+        <td>{{pd.pprice}}</td>
+      </tr>
+    </thead>
+
+  </table>
+
+</div>
+
+
+app.component.css
+
+.container{
+    border: 5px solid rgb(13, 192, 223);
+    margin-left: 200px;
+    margin-right: 200px;
+    
+}
+.form-group{
+    text-align: center;
+}
+.btn-primary{
+   margin-left: 520px;
+   color: blue;
+}
+
+
+
+
+
+
+Question-4
+
+app.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { FormGroup,FormControl,Validators } from '@angular/forms';
+import { Customer } from './customer';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  customer:Customer[]=[];
+  constructor(){}
+
+  ngOnInit(){ 
+  }
+
+  store(data){
+    console.log(data.value);
+  }
+}
+
+
+app.component.html
+
+<div class="container">
+  <h2 style="text-align: center;">CUSTOMER DETAILS</h2>
+
+  <form #myform=""ngForm>
+
+    <div class="form-group">
+      <label for="cname"><b>Customer Name</b></label><br>
+      <input type="text" class="form-control" id="cname" #n1="ngModel"  ngModel name="cname" required ><br>
+      <div *ngIf="n1.touched && n1.invalid">
+         <small *ngIf="n1.errors.required" class="error" style="color: red">Customer Name is Required</small>
+      </div>
+    </div><br>
+
+    <div class="form-group">
+      <label for="email"><b>Email ID</b></label><br>
+      <input type="email" class="form-control" id="email" #n2="ngModel" ngModel name="email" required><br>
+      <div *ngIf="n1.touched && n1.invalid">
+         <small *ngIf="n2.errors.required " class="error" style="color: red">Email is Required</small>
+      </div>
+    </div><br>
+
+    <div class="form-group">
+      <label for="mno"><b>Mobile No</b></label><br>
+      <input type="text" class="form-control" id="mno" #n3="ngModel" ngModel name="mno" required><br>
+      <div *ngIf="n3.touched && n3.invalid">
+         <small *ngIf="n2.errors.required" class="error" style="color: red">Mobile Number is Required</small>
+      </div>
+    </div><br>
+
+    <button type="submit" class="btn btn-primary"  (click)="store(myform)">STORE</button>
+  </form>
+
+</div>
+
+<div>
+
+  <p>
+    {{cname | json}}
+    {{email | json}}
+    {{mno | json}}
+  </p>
+</div>
+
+
+app.component.css
+
+.container{
+    border: 5px solid rgb(13, 192, 223);
+    margin-left: 200px;
+    margin-right: 200px;
+    
+}
+
+.btn-primary{
+    margin-left: 520px;
+    color: blue;
+ }
+ 
+ 
+ customer.ts
+ 
+ export class Customer{
+    cname:string;
+    email:string;
+    mno:number;
+    constructor(cname,email,mno){
+        this.cname=cname;
+        this.email=email;
+        this.mno=mno;
+    }
+}
+
